@@ -119,9 +119,25 @@ export const pagesTools = [
   },
   {
     name: 'meta_page_delete_post',
-    description: 'Delete a post by ID.',
-    inputSchema: { type: 'object', properties: { postId: { type: 'string' } }, required: ['postId'] },
-    handler: async ({ postId }) => fbDelete(`/${postId}`),
+    description: 'Delete a Page post by ID. Works for both published AND scheduled posts (same endpoint). Pass pageAccessToken for client-page scenarios; if omitted, the user token is used (works when you are an admin of the page).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        postId: { type: 'string' },
+        pageAccessToken: { type: 'string', description: 'Optional — get from meta_page_list_pages. Recommended for reliability.' },
+      },
+      required: ['postId'],
+    },
+    handler: async ({ postId, pageAccessToken }) => {
+      if (pageAccessToken) {
+        const url = `https://graph.facebook.com/v22.0/${postId}?access_token=${pageAccessToken}`;
+        const res = await fetch(url, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.error) throw new Error(`Page API error: ${data.error.message}`);
+        return data;
+      }
+      return fbDelete(`/${postId}`);
+    },
   },
   {
     name: 'meta_page_list_comments',
