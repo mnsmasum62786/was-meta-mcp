@@ -1,7 +1,7 @@
 {
   "name": "was-meta-mcp",
-  "version": "1.0.0",
-  "description": "Shareable Meta MCP server — manage Facebook Ads, Pages, Conversions API, Catalogs, Business Manager, and Instagram from any MCP-capable client (Claude Desktop, Cursor, etc) with your own Meta App + user token. 58 tools across all 7 Meta surfaces. Built by WAS (Web Analytics Solution).",
+  "version": "2.0.0",
+  "description": "Shareable Meta MCP server — Facebook Ads, Conversions API, Catalogues, Business Manager, Pixel admin from any MCP client (Claude Desktop, Cursor, etc) using your own Meta App + user token. 67 tools. For Facebook Pages + Instagram management, see github:mnsmasum62786/was-meta-page-mcp.",
   "type": "module",
   "bin": {
     "was-meta-mcp": "./cli.js"
@@ -14,7 +14,8 @@
     "config-paths.js",
     "tools/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "start": "node cli.js",
@@ -24,10 +25,11 @@
     "mcp",
     "model-context-protocol",
     "meta",
-    "facebook",
-    "instagram",
     "facebook-ads",
     "conversions-api",
+    "facebook-catalog",
+    "business-manager",
+    "meta-pixel",
     "claude",
     "claude-desktop",
     "was"

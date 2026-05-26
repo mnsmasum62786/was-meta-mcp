@@ -1,15 +1,17 @@
 # WAS Meta MCP
 
-Manage Facebook Ads, Conversions API, Pages, Business Manager, Catalogs, and Instagram from Claude Desktop, Cursor, or any MCP-compatible client using natural language. 58 tools cover all 7 Meta surfaces.
+Manage Facebook Ads, Conversions API, Catalogues, Business Manager, and Pixel admin from Claude Desktop, Cursor, or any MCP-compatible client using natural language. 67 tools.
 
 100 percent local. Your credentials stay on your machine. Built by [Abdullah Al Masum](https://webanalyticssolution.com) — Web Analytics Solution (WAS). MIT licensed.
+
+> **Looking for Facebook Pages or Instagram management?** As of v2.0.0, Page + IG tools moved to a companion package: [`was-meta-page-mcp`](https://github.com/mnsmasum62786/was-meta-page-mcp). Same OAuth token works for both — install both side-by-side.
 
 ## Prerequisites
 
 | | Required for | How to install |
 |---|---|---|
 | **Node.js 18+** | running `npx` | Mac: `brew install node` · Windows: https://nodejs.org · Linux: `apt install nodejs npm` |
-| **Git** | letting `npx` clone from GitHub | Mac: `brew install git` (or first `git --version` triggers Xcode tools) · Windows: https://git-scm.com · Linux: `apt install git` |
+| **Git** | letting `npx` clone from GitHub | Mac: `brew install git` · Windows: https://git-scm.com · Linux: `apt install git` |
 | **A Meta Developer App** | Meta API access — you create your own | Walk-through in Step 1 below |
 
 Verify in your terminal:
@@ -41,12 +43,7 @@ You now have:
 
    ```
    ads_management, ads_read, business_management,
-   pages_show_list, pages_read_engagement, pages_manage_metadata,
-   pages_manage_posts, pages_read_user_content, pages_messaging,
-   pages_manage_engagement, catalog_management,
-   instagram_basic, instagram_content_publish,
-   instagram_manage_comments, instagram_manage_insights,
-   read_insights
+   catalog_management, read_insights
    ```
 
 4. Click **Generate Access Token** → sign in popup → approve all
@@ -54,7 +51,9 @@ You now have:
 6. Open https://developers.facebook.com/tools/debug/accesstoken/ → paste token → **Debug**
 7. Click **Extend Access Token** at the bottom → copy the long-lived token
 
-**Important:** If you're the admin of your own app (which you are, since you created it), this long-lived token **never expires**. Save it once and you're done.
+**Important:** If you're the admin of your own app, this long-lived token **never expires**. Save it once and you're done.
+
+> If you ALSO want Page + IG management, add these scopes too when generating the token: `pages_show_list, pages_read_engagement, pages_read_user_content, pages_manage_metadata, pages_manage_posts, pages_messaging, instagram_basic, instagram_manage_comments, instagram_manage_insights, instagram_manage_messages, instagram_content_publish`. Then `npx ... auth` on the companion package `was-meta-page-mcp`.
 
 ### Step 3 — Connect with one terminal command
 
@@ -76,8 +75,6 @@ Open your Claude Desktop config:
 - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-Paste this block (merge with any existing `mcpServers`):
-
 ```json
 {
   "mcpServers": {
@@ -89,20 +86,19 @@ Paste this block (merge with any existing `mcpServers`):
 }
 ```
 
-Fully quit Claude (Cmd+Q on Mac, fully exit on Windows) and reopen. In a new chat:
+Quit and reopen Claude. Test:
 
 > "Run meta_quick_stats."
 
-Returns a snapshot of all businesses, pages, ad accounts, and Instagram accounts you can access.
+Returns a snapshot of all businesses, ad accounts, etc. you can access.
 
 ## Useful commands
 
 ```bash
-npx -y github:mnsmasum62786/was-meta-mcp           # Start the MCP server
-npx -y github:mnsmasum62786/was-meta-mcp auth      # Connect / re-connect
-npx -y github:mnsmasum62786/was-meta-mcp logout    # Delete the saved credentials
-npx -y github:mnsmasum62786/was-meta-mcp status    # Show config + permissions
-npx -y github:mnsmasum62786/was-meta-mcp help      # Usage
+npx -y github:mnsmasum62786/was-meta-mcp           # Start MCP
+npx -y github:mnsmasum62786/was-meta-mcp auth      # Connect
+npx -y github:mnsmasum62786/was-meta-mcp logout    # Forget
+npx -y github:mnsmasum62786/was-meta-mcp status    # Show config
 ```
 
 ## What you can ask Claude
@@ -119,12 +115,6 @@ npx -y github:mnsmasum62786/was-meta-mcp help      # Usage
 - "Send a test Purchase event to pixel 1234567890 with value 99.99 USD, test code TEST123"
 - "Send a Lead CAPI event for email john@example.com with content name 'Newsletter signup'"
 
-**Pages:**
-- "List all my Facebook Pages"
-- "Show last 30 days insights for page 5555555555"
-- "Get the 10 most recent posts on page 5555555555"
-- "What comments are on post X?"
-
 **Business Manager:**
 - "List all my Business Managers"
 - "Show ad accounts owned by business 1011638132906044"
@@ -135,26 +125,27 @@ npx -y github:mnsmasum62786/was-meta-mcp help      # Usage
 - "Show products in catalog 999999"
 - "What are the diagnostic issues with catalog 999999?"
 
-**Instagram:**
-- "List my Instagram Business accounts"
-- "Show insights for IG account 17841440000000"
-- "Get insights for the latest 10 IG posts on account 17841440000000"
+**Pixel admin:**
+- "List pixels shared with ad account act_XXX"
+- "Create a new pixel called 'WAS Q1 Site' under business 12345"
+- "Assign pixel 999 to ad account act_XXX with TASK_ANALYZE"
+- "Get event match quality for pixel 999"
+- "Create a custom conversion 'High-Value Purchases' filtered to value >= 5000"
 
-**Universal escape hatches** (when no specialized tool exists):
+**Universal escape hatches:**
 - "Use meta_graph_get on path /me/businesses?fields=id,name"
 - "Use meta_graph_post on path /act_XXX/campaigns with body {name:'X', objective:'OUTCOME_LEADS', ...}"
 
-## All 58 tools
+## All 67 tools
 
 | Category | Count | Examples |
 |---|---|---|
-| **Ads** | 13 | list_ad_accounts, list_campaigns, create_campaign, get_insights, list_custom_audiences |
+| **Ads** (read + write) | 20 | list_ad_accounts, list_campaigns, create_campaign, update_campaign, get_insights, list_custom_audiences, create_ad, create_creative, upload_image, upload_video, search_targeting |
 | **Conversions API** | 5 | send_event, send_purchase, send_lead, batch_send, test_event |
-| **Pages** | 9 | list_pages, get_info, get_insights, create_post, list_comments, reply_comment |
-| **Business Manager** | 8 | list_businesses, list_owned_pages, list_client_ad_accounts, list_users |
-| **Catalogs** | 8 | list_catalogs, list_products, create_product, update_product, get_diagnostics |
-| **Instagram** | 8 | list_accounts, get_insights, list_media, list_comments, create_post |
-| **Helpers** | 7 | graph_get, graph_post, graph_delete, whoami, token_info, search, quick_stats |
+| **Business Manager** | 8 | list_businesses, get_info, list_owned_pages, list_client_ad_accounts, list_users, list_system_users |
+| **Catalogues** (read + write) | 15 | list_catalogs, list_products, create_product, batch_upload_products, create_product_set, create_feed, get_diagnostics |
+| **Pixel admin** | 9 | create_pixel, update_pixel, list_shared_accounts, assign_to_ad_account, create_custom_conversion, get_event_match_quality, list_custom_conversions |
+| **Helpers** | 6 | graph_get, graph_post, graph_delete, whoami, token_info, search |
 
 ## How it works
 
@@ -170,19 +161,17 @@ Each user uses their own Meta App + own user token. Your API quota is your own.
 
 The user token is tied to your Facebook account, NOT a single Business Manager. So **any BM you have access to is automatically reachable through one MCP instance.** Just specify the business ID, ad account, or page ID per tool call.
 
-If you want isolated connectors per BM (e.g. one labeled "Meta — Personal", another "Meta — Agency"), put each as a separate `mcpServers` entry with its own token in the `env` block. See `Advanced` below.
-
 ## Security notes
 
 - Credentials live only in `~/.was-meta-mcp/config.json` on your machine with `0600` permissions
 - stdio transport — no inbound HTTP port, no network exposure
 - Token never expires (as long as you're admin of your own app)
-- Revoke at https://facebook.com/settings/?tab=business_tools (revokes the app's access)
+- Revoke at https://facebook.com/settings/?tab=business_tools
 - Remove local copy: `npx -y github:mnsmasum62786/was-meta-mcp logout`
 
 ## Advanced — env-var override
 
-For multi-account setups, put credentials in Claude Desktop config instead of (or in addition to) the config file:
+For multi-account setups, put credentials in Claude Desktop config:
 
 ```json
 {
@@ -211,17 +200,25 @@ For multi-account setups, put credentials in Claude Desktop config instead of (o
 
 Env vars override the matching field in `~/.was-meta-mcp/config.json`.
 
+## Companion: was-meta-page-mcp
+
+For Facebook Pages + Instagram Business management (posts, scheduled posts, comments with bulk reply/hide, messaging, mentions, reviews, events, IG media, stories, comments, DMs, hashtag search, cross-platform publishing — 48 tools), install:
+
+```bash
+npx -y github:mnsmasum62786/was-meta-page-mcp auth
+```
+
+Same Meta App, same OAuth token — re-authenticate with the additional `pages_*` and `instagram_*` scopes (see was-meta-page-mcp README) and both packages share credentials transparently.
+
 ## Troubleshooting
 
 **"App isn't verified" warning during OAuth** — expected for personal apps. Click **Advanced → Go to <your app> (unsafe)**. Safe because it's your own app.
 
 **"Permission denied" on a specific tool** — your token doesn't have the required scope. Re-extend the token with the missing permission in Graph API Explorer.
 
-**"Insufficient permission to access asset"** — your Facebook account doesn't have access to the requested Page/ad account/business. Check at https://business.facebook.com.
+**"Insufficient permission to access asset"** — your Facebook account doesn't have access to the requested asset. Check at https://business.facebook.com.
 
 **"Token invalid" error** — your token was revoked. Re-run `auth`.
-
-**Need to publish to Instagram?** — re-extend your token with `instagram_content_publish` scope (it's not always granted by default).
 
 ## License
 

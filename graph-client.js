@@ -31,11 +31,18 @@ if (!ACCESS_TOKEN) {
 
 const BASE_URL = `https://graph.facebook.com/${API_VERSION}`;
 
+/**
+ * Build a Graph API URL.
+ * Token precedence (highest wins):
+ *   1. `access_token` inside `params` (caller-supplied via meta_graph_*)
+ *   2. default user `ACCESS_TOKEN`
+ */
 function buildUrl(path, params) {
-  let url = BASE_URL + (path.startsWith('/') ? path : '/' + path);
-  const all = { ...(params || {}), access_token: ACCESS_TOKEN };
+  const url = BASE_URL + (path.startsWith('/') ? path : '/' + path);
+  // Start with default user token, let caller params override.
+  const merged = { access_token: ACCESS_TOKEN, ...(params || {}) };
   const qs = new URLSearchParams();
-  for (const [k, v] of Object.entries(all)) {
+  for (const [k, v] of Object.entries(merged)) {
     if (v === undefined || v === null) continue;
     qs.append(k, typeof v === 'object' ? JSON.stringify(v) : String(v));
   }

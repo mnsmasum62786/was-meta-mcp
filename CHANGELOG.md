@@ -1,21 +1,42 @@
 # Changelog
 
+## 2.0.0 — 2026-05-27
+
+**Breaking: scope reduced.** Facebook Pages + Instagram tools have moved to a separate package: [`was-meta-page-mcp`](https://github.com/mnsmasum62786/was-meta-page-mcp). This package now focuses on Ads, Conversions API, Catalogues, Business Manager, and Pixel admin.
+
+**Removed (27 tools — install `was-meta-page-mcp` instead):**
+- `meta_page_*` — all Facebook Page tools (posts, insights, comments, messaging, conversations)
+- `meta_ig_*` — all Instagram Business tools (media, insights, comments, DMs)
+
+**Fixed:**
+- `meta_graph_get` / `meta_graph_post` / `meta_graph_delete` now respect a caller-supplied `access_token` inside `params` (previously was always overwritten with the user token, blocking page-token escape-hatch use)
+
+**Tool count: 95 → 67**
+
+**Migration:** if you used any `meta_page_*` or `meta_ig_*` tool, install the new companion package:
+
+```bash
+npx -y github:mnsmasum62786/was-meta-page-mcp auth
+```
+
+Both packages share the same Meta App credentials and OAuth token, so the auth flow re-uses what you already have.
+
+## 1.2.0 — 2026-05-24
+
+- Added 9 Pixel admin tools
+
+## 1.1.0 — 2026-05-24
+
+- Added ad-set / ad / creative / upload / targeting + page write tools
+
 ## 1.0.0 — 2026-05-24
 
-Initial public release.
+Initial public release. 58 tools across all 7 Meta surfaces.
 
-- 58 tools covering all 7 Meta surfaces:
-  - **Marketing API / Ads** (13): list_ad_accounts, get_account_summary, list_campaigns, get_campaign, create_campaign, update_campaign, list_adsets, list_ads, get_insights, list_custom_audiences, create_custom_audience, list_pixels, get_pixel_events
-  - **Conversions API** (5): send_event, send_purchase, send_lead, batch_send, test_event — auto SHA-256 hashing of user PII
-  - **Pages** (9): list_pages, get_info, get_insights, list_posts, create_post, delete_post, list_comments, reply_comment, list_conversations
-  - **Business Manager** (8): list_businesses, get_info, list_owned_pages, list_owned_ad_accounts, list_client_pages, list_client_ad_accounts, list_users, list_system_users
-  - **Catalogs** (8): list_catalogs, get_info, list_products, get_product, create_product, update_product, delete_product, get_diagnostics
-  - **Instagram** (8): list_accounts, get_info, get_insights, list_media, get_media_insights, list_comments, reply_comment, create_post
-  - **Helpers / Universal** (7): graph_get, graph_post, graph_delete (escape hatches for any endpoint), whoami, token_info, search, quick_stats
-- Bring-your-own Meta App + long-lived user access token (never expires for app admins)
-- Auth flow validates token + permissions against Graph API before saving
-- Credentials saved to `~/.was-meta-mcp/config.json` (mode 0600)
-- Claude Desktop config requires only command + args — no credentials in the config file
-- stdio transport — 100% local, no network exposure
-- CLI: `was-meta-mcp auth | logout | status | help`
-- Cross-platform: Mac, Linux, Windows
+- **Marketing API / Ads** (13)
+- **Conversions API** (5) — auto SHA-256 hashing of user PII
+- **Pages** (9)
+- **Business Manager** (8)
+- **Catalogs** (8)
+- **Instagram** (8)
+- **Helpers / Universal** (7) — graph_get/post/delete, whoami, token_info, search, quick_stats
